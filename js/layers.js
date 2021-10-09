@@ -93,7 +93,7 @@ function coinBuildingBuyable({
         title,
         display() { // Everything else displayed in the buyable button after the title
             // TODO Include percentage of Coins/Sec
-            return `Amount: ${format(getBuyableAmount(this.layer, this.id))}
+            return `Amount: ${getBuyableAmount(this.layer, this.id)}
                     Cost: ${format(tmp[this.layer].buyables[this.id].cost)}
                     Coins/Sec: ${format(buyableEffect(this.layer, this.id))}`
         },
