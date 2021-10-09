@@ -67,6 +67,11 @@ function isEndgame() {
 
 
 
+// TODO Comment where constants and formulas come from in Synergism source code (or something)
+	// Currently they're copied from revision 4adcb574497c7a627ee94cc858b1030bd38b962e (master branch) of https://github.com/Pseudo-Corp/SynergismOfficial
+
+
+
 // Less important things beyond this point!
 
 var backgroundStyle = {
