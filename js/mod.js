@@ -2,12 +2,12 @@ let modInfo = {
 	name: "Synergism Tree",
 	id: "synergism-tree",
 	author: "Max Nanasy",
-	pointsName: "points",
+	pointsName: "coins",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (100), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
@@ -42,7 +42,14 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(1)
+	let gain = new Decimal(0)
+
+	const buildingBuyableIds = [ 11 ]
+	for (const buyableId of buildingBuyableIds)
+		gain = gain.add(buyableEffect('d', buyableId))
+
+	// TODO Handle taxes
+
 	return gain
 }
 
