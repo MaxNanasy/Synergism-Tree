@@ -66,7 +66,8 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	// TODO Implement Synergism's endgame condition, if any
+	return false
 }
 
 
