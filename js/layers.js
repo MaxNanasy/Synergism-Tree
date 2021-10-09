@@ -33,7 +33,6 @@ addLayer("d", {
         player.best = player.best.max(player.points)
     },
     buyables: {
-        // TODO Don't show buildings past Workers at first
         11: coinBuildingBuyable({
             title: 'Workers',
             baseCost: 100,
@@ -43,24 +42,28 @@ addLayer("d", {
         12: coinBuildingBuyable({
             title: 'Investments',
             baseCost: 2e3,
+            unlockAmount: 1000,
             costExponent: 2,
             baseEffect: 100,
         }),
         13: coinBuildingBuyable({
             title: 'Printers',
             baseCost: 4e4,
+            unlockAmount: 20000,
             costExponent: 3,
             baseEffect: 1000,
         }),
         14: coinBuildingBuyable({
             title: 'Coin Mints',
             baseCost: 8e5,
+            unlockAmount: 100000,
             costExponent: 4,
             baseEffect: 10000,
         }),
         15: coinBuildingBuyable({
             title: 'Alchemies',
             baseCost: 16e6,
+            unlockAmount: 8e6,
             costExponent: 5,
             baseEffect: 100000,
         })
@@ -70,6 +73,7 @@ addLayer("d", {
 function coinBuildingBuyable({
     title,
     baseCost,
+    unlockAmount = 0,
     costExponent,
     baseEffect,
 }) {
@@ -96,6 +100,7 @@ function coinBuildingBuyable({
         buy() {
             player.points = player.points.sub(this.cost())
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-        }
+        },
+        unlocked() { return player.best.gte(unlockAmount) },
     }
 }
