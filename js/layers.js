@@ -28,8 +28,16 @@ addLayer("d", {
     layerShown(){return true},
     buyables: {
         11: {
-            // TODO Use real cost formula
-            cost(x) { return new Decimal(100).mul(x.add(1)) },
+            // TODO The Synergism cost formula seems more complicated than this
+            // TODO Is there any cost rounding in Synergism?
+            cost(x) {
+                let cost = new Decimal(100);
+                for (let i = 0; i < +x; i ++) {
+                    cost = cost.mul(1.25);
+                    cost = cost.add(1);
+                }
+                return cost;
+            },
             effect(x) { return x.mul(10) },
             title: "Workers",
             display() { // Everything else displayed in the buyable button after the title
