@@ -8,6 +8,7 @@ let modInfo = {
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (100), // Used for hard resets and new players
+	// TODO Match Synergism's offline time mechanics
 	offlineLimit: 1,  // In hours
 }
 
