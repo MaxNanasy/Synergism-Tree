@@ -92,15 +92,20 @@ function coinBuildingBuyable({
         effect(x) { return x.mul(baseEffect) },
         title,
         display() {
-            const coinGen = buyableEffect(this.layer, this.id)
+            const manuallyBoughtAmount = getBuyableAmount(this.layer, this.id)
+            // TODO Don't hardcode
+            const autoBoughtAmount = 0
 
+            const cost = tmp[this.layer].buyables[this.id].cost
+
+            const coinGen = buyableEffect(this.layer, this.id)
             const totalCoinGen = getBaseCoinBuildingPointGen()
             const effectPercent = totalCoinGen.neq(0)
                 ? coinGen.div(totalCoinGen).mul(100)
                 : 0
 
-            return `Amount: ${getBuyableAmount(this.layer, this.id)}
-                    Cost: ${format(tmp[this.layer].buyables[this.id].cost)}
+            return `Amount: ${manuallyBoughtAmount} [+${autoBoughtAmount}]
+                    Cost: ${format(cost)}
                     Coins/Sec: ${format(coinGen)} [${format(effectPercent)}%]`
         },
         canAfford() { return player.points.gte(this.cost()) },
