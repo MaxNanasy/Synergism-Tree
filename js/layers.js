@@ -92,10 +92,16 @@ function coinBuildingBuyable({
         effect(x) { return x.mul(baseEffect) },
         title,
         display() { // Everything else displayed in the buyable button after the title
-            // TODO Include percentage of Coins/Sec
+            const coinGen = buyableEffect(this.layer, this.id)
+
+            const totalCoinGen = getBaseCoinBuildingPointGen()
+            const effectPercent = totalCoinGen.neq(0)
+                ? coinGen.div(totalCoinGen).mul(100)
+                : 0
+
             return `Amount: ${getBuyableAmount(this.layer, this.id)}
                     Cost: ${format(tmp[this.layer].buyables[this.id].cost)}
-                    Coins/Sec: ${format(buyableEffect(this.layer, this.id))}`
+                    Coins/Sec: ${format(coinGen)} [${format(effectPercent)}%]`
         },
         canAfford() { return player.points.gte(this.cost()) },
         buy() {
