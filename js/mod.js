@@ -44,7 +44,7 @@ function getPointGen() {
 
 	let gain = new Decimal(0)
 
-	const buildingBuyableIds = [ 11 ]
+	const buildingBuyableIds = [ 11, 12, 13, 14, 15 ]
 	for (const buyableId of buildingBuyableIds)
 		gain = gain.add(buyableEffect('d', buyableId))
 

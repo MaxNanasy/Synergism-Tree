@@ -27,30 +27,69 @@ addLayer("d", {
     ],
     layerShown(){return true},
     buyables: {
-        11: {
-            // TODO The Synergism cost formula seems more complicated than this
-            // TODO Is there any cost rounding in Synergism?
-            cost(x) {
-                let cost = new Decimal(100);
-                for (let i = 0; i < +x; i ++) {
-                    cost = cost.mul(1.25);
-                    cost = cost.add(1);
-                }
-                return cost;
-            },
-            effect(x) { return x.mul(10) },
-            title: "Workers",
-            display() { // Everything else displayed in the buyable button after the title
-                // TODO Include percentage of Coins/Sec
-                return `Amount: ${format(getBuyableAmount(this.layer, this.id))}
-                        Cost: ${format(tmp[this.layer].buyables[this.id].cost)}
-                        Coins/Sec: ${format(buyableEffect(this.layer, this.id))}`
-            },
-            canAfford() { return player.points.gte(this.cost()) },
-            buy() {
-                player.points = player.points.sub(this.cost())
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-            }
-        }
+        // TODO Don't show buildings past Workers at first
+        11: coinBuildingBuyable({
+            title: 'Workers',
+            baseCost: 100,
+            costExponent: 1,
+            baseEffect: 10,
+        }),
+        12: coinBuildingBuyable({
+            title: 'Investments',
+            baseCost: 2e3,
+            costExponent: 2,
+            baseEffect: 100,
+        }),
+        13: coinBuildingBuyable({
+            title: 'Printers',
+            baseCost: 4e4,
+            costExponent: 3,
+            baseEffect: 1000,
+        }),
+        14: coinBuildingBuyable({
+            title: 'Coin Mints',
+            baseCost: 8e5,
+            costExponent: 4,
+            baseEffect: 10000,
+        }),
+        15: coinBuildingBuyable({
+            title: 'Alchemies',
+            baseCost: 16e6,
+            costExponent: 5,
+            baseEffect: 100000,
+        })
     }
 })
+
+function coinBuildingBuyable({
+    title,
+    baseCost,
+    costExponent,
+    baseEffect,
+}) {
+    return {
+        // TODO The Synergism cost formula seems more complicated than this
+        // TODO Is there any cost rounding in Synergism?
+        cost(x) {
+            let cost = new Decimal(baseCost)
+            for (let i = 0; i < +x; i ++) {
+                cost = cost.mul(Decimal.pow(1.25, costExponent))
+                cost = cost.add(1)
+            }
+            return cost
+        },
+        effect(x) { return x.mul(baseEffect) },
+        title,
+        display() { // Everything else displayed in the buyable button after the title
+            // TODO Include percentage of Coins/Sec
+            return `Amount: ${format(getBuyableAmount(this.layer, this.id))}
+                    Cost: ${format(tmp[this.layer].buyables[this.id].cost)}
+                    Coins/Sec: ${format(buyableEffect(this.layer, this.id))}`
+        },
+        canAfford() { return player.points.gte(this.cost()) },
+        buy() {
+            player.points = player.points.sub(this.cost())
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        }
+    }
+}
