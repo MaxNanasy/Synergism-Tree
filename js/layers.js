@@ -26,6 +26,12 @@ addLayer("d", {
         {key: "d", description: "D: Reset for diamonds", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
+    update(diff) {
+        // player.best is updated here because update for the top-left layer
+        // seems to be the earliest dev hook invoked after player.points is
+        // updated in gameLoop
+        player.best = player.best.max(player.points)
+    },
     buyables: {
         // TODO Don't show buildings past Workers at first
         11: coinBuildingBuyable({

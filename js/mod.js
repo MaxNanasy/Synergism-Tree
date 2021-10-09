@@ -56,6 +56,8 @@ function getPointGen() {
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	// The Modding Tree doesn't seem to track best player points OOTB
+	best: getStartPoints()
 }}
 
 // Display extra things at the top of the page
