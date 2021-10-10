@@ -97,6 +97,34 @@ addLayer("d", {
                 return new Decimal(1.1)
             },
         }),
+
+        22: coinBuyable({
+            title: 'Multipliers',
+            unlockAmount: 100000,
+
+            // TODO The Synergism cost formula seems more complicated than this
+            cost(x) {
+                return Decimal.pow(10, x).mul(1e5)
+            },
+
+            effect(x) {
+                return this.multiplierPower().pow(x)
+            },
+
+            displayTrailer() {
+                const multiplierPower = this.multiplierPower()
+
+                const multiplierEffect = buyableEffect(this.layer, this.id)
+
+                return `Multiplier Power: ${format(multiplierPower)}x
+                        Multiplier: ${format(multiplierEffect)}x`
+            },
+
+            multiplierPower() {
+                // TODO Don't hardcode
+                return new Decimal(2)
+            },
+        }),
     }
 })
 
@@ -120,9 +148,9 @@ function coinBuildingBuyable({
         effect(x) {
             let effect = x.mul(baseEffect)
 
-            const acceleratorsBuyableId = 21
-            const accelerationMultiplier = buyableEffect(this.layer, acceleratorsBuyableId)
-            effect = effect.mul(accelerationMultiplier)
+            const multiplyingBuyableIds = [ 21, 22 ]
+            for (const buyableId of multiplyingBuyableIds)
+                effect = effect.mul(buyableEffect(this.layer, buyableId))
 
             return effect
         },
