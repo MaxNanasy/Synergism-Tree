@@ -172,6 +172,7 @@ function coinBuyable({
             return player.points.gte(this.cost())
         },
 
+        // TODO In Synergism, more than 1 can be bought at a time
         buy() {
             player.points = player.points.sub(this.cost())
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
