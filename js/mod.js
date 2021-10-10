@@ -39,10 +39,6 @@ function getPointGen() {
 
 	// TODO Handle taxes
 
-	return getBaseCoinBuildingPointGen()
-}
-
-function getBaseCoinBuildingPointGen() {
 	let gain = new Decimal(0)
 
 	const buildingBuyableIds = [ 11, 12, 13, 14, 15 ]
@@ -69,6 +65,8 @@ function isEndgame() {
 
 // TODO Comment where constants and formulas come from in Synergism source code (or something)
 	// Currently they're copied from revision 4adcb574497c7a627ee94cc858b1030bd38b962e (master branch) of https://github.com/Pseudo-Corp/SynergismOfficial
+
+// TODO Is there any cost rounding in Synergism?
 
 
 

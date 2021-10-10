@@ -67,20 +67,47 @@ addLayer("d", {
             unlockAmount: 8e6,
             costExponent: 5,
             baseEffect: 100000,
-        })
+        }),
+
+        21: coinBuyable({
+            title: 'Accelerators',
+            unlockAmount: 1000,
+
+            // TODO The Synergism cost formula seems more complicated than this
+            cost(x) {
+                return Decimal.pow(4, x).mul(500)
+            },
+
+            effect(x) {
+                // TODO https://github.com/Pseudo-Corp/SynergismOfficial/blob/4adcb574497c7a627ee94cc858b1030bd38b962e/src/Synergism.ts#L1719-L1721
+                return this.accelerationPower().pow(x)
+            },
+
+            displayTrailer() {
+                const accelerationPowerPercentIncrease = this.accelerationPower().mul(100).sub(100)
+
+                const accelerationMultiplier = buyableEffect(this.layer, this.id)
+
+                return `Acceleration Power: ${format(accelerationPowerPercentIncrease)}%
+                        Acceleration Multiplier: ${format(accelerationMultiplier)}x`
+            },
+
+            accelerationPower() {
+                // TODO Don't hardcode
+                return new Decimal(1.1)
+            },
+        }),
     }
 })
 
 function coinBuildingBuyable({
-    title,
     baseCost,
-    unlockAmount = 0,
     costExponent,
     baseEffect,
+    ...otherArgs
 }) {
-    return {
+    return coinBuyable({
         // TODO The Synergism cost formula seems more complicated than this
-        // TODO Is there any cost rounding in Synergism?
         cost(x) {
             let cost = new Decimal(baseCost)
             for (let i = 0; i < +x; i ++) {
@@ -89,8 +116,42 @@ function coinBuildingBuyable({
             }
             return cost
         },
-        effect(x) { return x.mul(baseEffect) },
+
+        effect(x) {
+            let effect = x.mul(baseEffect)
+
+            const acceleratorsBuyableId = 21
+            const accelerationMultiplier = buyableEffect(this.layer, acceleratorsBuyableId)
+            effect = effect.mul(accelerationMultiplier)
+
+            return effect
+        },
+
+        displayTrailer() {
+            const coinGen = buyableEffect(this.layer, this.id)
+            const totalCoinGen = getPointGen()
+            const effectPercent = totalCoinGen.neq(0)
+                ? coinGen.div(totalCoinGen).mul(100)
+                : 0
+
+            return `Coins/Sec: ${format(coinGen)} [${format(effectPercent)}%]`
+        },
+
+        ...otherArgs,
+    })
+}
+
+function coinBuyable({
+    title,
+    baseCost,
+    unlockAmount = 0,
+    costExponent,
+    displayTrailer = () => '',
+    ...otherArgs
+}) {
+    return {
         title,
+
         display() {
             const manuallyBoughtAmount = getBuyableAmount(this.layer, this.id)
             // TODO Don't hardcode
@@ -98,21 +159,24 @@ function coinBuildingBuyable({
 
             const cost = tmp[this.layer].buyables[this.id].cost
 
-            const coinGen = buyableEffect(this.layer, this.id)
-            const totalCoinGen = getBaseCoinBuildingPointGen()
-            const effectPercent = totalCoinGen.neq(0)
-                ? coinGen.div(totalCoinGen).mul(100)
-                : 0
-
             return `Amount: ${manuallyBoughtAmount} [+${autoBoughtAmount}]
                     Cost: ${format(cost)}
-                    Coins/Sec: ${format(coinGen)} [${format(effectPercent)}%]`
+                    ${displayTrailer.call(this)}`
         },
-        canAfford() { return player.points.gte(this.cost()) },
+
+        unlocked() {
+            return player.best.gte(unlockAmount)
+        },
+
+        canAfford() {
+            return player.points.gte(this.cost())
+        },
+
         buy() {
             player.points = player.points.sub(this.cost())
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
         },
-        unlocked() { return player.best.gte(unlockAmount) },
+
+        ...otherArgs,
     }
 }
