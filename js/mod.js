@@ -68,6 +68,12 @@ function isEndgame() {
 
 // TODO Is there any cost rounding in Synergism?
 
+// TODO Implement quarks
+
+// TODO Implement upgrades
+
+// TODO Implement achievements
+
 
 
 // Less important things beyond this point!
