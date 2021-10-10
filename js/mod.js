@@ -74,6 +74,8 @@ function isEndgame() {
 
 // TODO Implement achievements
 
+// TODO Implement building purchase hotkeys
+
 
 
 // Less important things beyond this point!
